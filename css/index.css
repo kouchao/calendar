@@ -1,0 +1,29 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.kc-content, .kc-weeks {
+    display: flex;
+    justify-content: space-around;
+}
+
+.kc-unit {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.kc-now {
+    color: green;
+}
+
+.kc-after {
+    color: #666;
+}
+
+.kc-befor {
+    color: #666;
+}
