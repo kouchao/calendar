@@ -1,3 +1,18 @@
+var setClass = {
+    isToday(json, y, m, d) {
+        if(y == year && m == month && day == d){
+            json.class = 'kc-now kc-today'
+        }
+    },
+    isAbnormal(json, y, m, d) {
+        if(d == 10){
+            json.class = 'kc-now kc-abnormalDay'
+        }
+    }
+}
+
+
+
 // 今年
 const year = new Date().getFullYear();
 
@@ -162,10 +177,11 @@ function getMonthArray(y, m) {
 
     let afterMonth = getNowYearMonthgetNowYearMonth(y)[m - 1 > 0 ? m - 1 : 11]
     for (let i = 0; i < firstWeek - 1; i++) {
-        monthDays.unshift({
+        let json = {
             text: afterMonth - i,
             class: 'kc-befor'
-        })
+        };
+        monthDays.unshift(json)
     }
 
 
@@ -174,12 +190,13 @@ function getMonthArray(y, m) {
         let json = {
             text: i + 1,
             class: 'kc-now '
-        }
+        };
 
         if(y == year && m == month && day == i + 1){
-            console.log(i)
             json.class = 'kc-now kc-today'
         }
+        setClass.isToday(json, y, m, i + 1)
+        setClass.isAbnormal(json, y, m, i + 1)
 
         monthDays.push(json)
     }
@@ -188,11 +205,14 @@ function getMonthArray(y, m) {
     // 生成月之后数据
     let surplus = monthDays.length <= 35 ? 35 - monthDays.length : 42 - monthDays.length
     for (let i = 1; i <= surplus; i++) {
-        monthDays.push({
+        let json = {
             text: i,
             class: 'kc-after'
-        })
+        };
+
+        monthDays.push(json)
     }
 
     return monthDays
 }
+
