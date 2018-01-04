@@ -1,20 +1,79 @@
-var mySwiper = new Swiper('.swiper-container', {
-    loop: true
-})
-
 // 今年
-var year = new Date().getFullYear();
+const year = new Date().getFullYear();
 
 // 今月
-var month = new Date().getMonth() + 1;
+const month = new Date().getMonth() + 1;
 
 // 今天
-var day = new Date().getDate();
+const day = new Date().getDate();
 
 
 $('.kc-year').html(year)
 $('.kc-month').html(month + 1)
 $('.kc-day').html(day)
+
+
+let nowYear = year
+let nowMonth = month
+// let nowDay = day
+
+
+let orderBy = ['month3', 'month2']
+
+const mySwiper = new Swiper('.swiper-container', {
+    loop: true,
+    onSlideChangeEnd: function (swiper) {
+        if($('.swiper-slide-active').attr('mmmm')) {
+            nowYear = parseInt($('.swiper-slide-active').attr('yyyy'))
+            nowMonth = parseInt($('.swiper-slide-active').attr('mmmm'))
+
+            let cccc = $('.swiper-slide-active').attr('cccc')
+
+            if(cccc == 'month1'){
+                orderBy = ['month3', 'month2']
+            } else if(cccc == 'month2') {
+                orderBy = ['month1', 'month3']
+            } else {
+                orderBy = ['month2', 'month1']
+            }
+
+            $('.' + orderBy[0]).html('')
+            $('.' + orderBy[1]).html('')
+
+            if(nowMonth > 1){
+                $('.' + orderBy[0]).append(build(getMonthArray(nowYear, nowMonth - 1)))
+                $('.' + orderBy[0]).attr('yyyy', nowYear)
+                $('.' + orderBy[0]).attr('mmmm', nowMonth - 1)
+                $('.' + orderBy[0]).attr('cccc', orderBy[0])
+            }else {
+                $('.' + orderBy[0]).append(build(getMonthArray(nowYear - 1, 12)))
+                $('.' + orderBy[0]).attr('yyyy', nowYear - 1)
+                $('.' + orderBy[0]).attr('mmmm', 12)
+                $('.' + orderBy[0]).attr('cccc', orderBy[0])
+
+            }
+
+            if(nowMonth < 12) {
+                $('.' + orderBy[1]).append(build(getMonthArray(nowYear, nowMonth + 1)))
+                $('.' + orderBy[1]).attr('yyyy', nowYear)
+                $('.' + orderBy[1]).attr('mmmm', nowMonth + 1)
+                $('.' + orderBy[1]).attr('cccc', orderBy[1])
+
+            } else {
+                $('.' + orderBy[1]).append(build(getMonthArray(nowYear + 1, 1)))
+                $('.' + orderBy[1]).attr('yyyy', nowYear + 1)
+                $('.' + orderBy[1]).attr('mmmm', 1)
+                $('.' + orderBy[1]).attr('cccc', orderBy[1])
+
+            }
+        }
+
+        $('.kc-nowYear').html(nowYear)
+        $('.kc-nowMonth').html(nowMonth)
+    }
+})
+
+setHtml()
 
 
 // 判断闰年
@@ -23,50 +82,86 @@ function is_leap(year) {
 }
 
 // 定义12个月份
-var m_days = [31, 28 + is_leap(2001), 31, 30, 31, 31, 30, 31, 30, 31, 30, 31];
-
+function getNowYearMonthgetNowYearMonth(y) {
+    return [31, 28 + is_leap(y), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+}
 
 // 获取月份的第一天
 function getFirstWeek(y, m) {
-    return new Date(y, m - 1, 1).getDay()
+    return new Date(y, m, 1).getDay()
 }
 
 
 function build(m) {
-    var content = $('<div class="kc-content"></div>');
+    let content = $('<div class="kc-content"></div>');
 
+    let utilNum = m.length == 35 ? 5 : 6
 
-
-    for(var i = 0; i < 7; i++) {
-        var col = $('<div class="kc-col"></div>');
+    for(let i = 0; i < 7; i++) {
+        let col = $('<div class="kc-col"></div>');
         content.append(col)
-        for(var j = 0; j < 6; j++) {
-            var unit = $('<div class="kc-unit"></div>');
-            unit.html(m[j * 6 + i].text)
-            unit.addClass(m[j * 6 + i].class)
+        for(let j = 0; j < utilNum; j++) {
+            let unit = $('<div class="kc-unit"></div>');
+            unit.html(m[j * 7 + i].text)
+            unit.addClass(m[j * 7 + i].class)
             col.append(unit)
         }
     }
-
-    console.log(content)
-
     return content
 }
 
 
-$('.month1').append(build(getMonthArray(year, month)))
-$('.month2').append(build(getMonthArray(year, month - 1)))
-$('.month3').append(build(getMonthArray(year, month + 1)))
+
+function setHtml() {
+    $('.month1').html('')
+    $('.month2').html('')
+    $('.month3').html('')
+
+    $('.month1').append(build(getMonthArray(nowYear, nowMonth)))
+    $('.month1').attr('yyyy', nowYear)
+    $('.month1').attr('mmmm', nowMonth)
+    $('.month1').attr('cccc', 'month1')
+
+    if(nowMonth > 1){
+        $('.month3').append(build(getMonthArray(nowYear, nowMonth - 1)))
+        $('.month3').attr('yyyy', nowYear)
+        $('.month3').attr('mmmm', nowMonth - 1)
+        $('.month3').attr('cccc', 'month3')
+
+    }else {
+        $('.month3').append(build(getMonthArray(nowYear - 1, 12)))
+        $('.month3').attr('yyyy', nowYear - 1)
+        $('.month3').attr('mmmm', 12)
+        $('.month3').attr('cccc', 'month3')
+
+    }
+
+    if(nowMonth < 12) {
+        $('.month2').append(build(getMonthArray(nowYear, nowMonth + 1)))
+        $('.month2').attr('yyyy', nowYear)
+        $('.month2').attr('mmmm', nowMonth + 1)
+        $('.month2').attr('cccc', 'month2')
+    } else {
+        $('.month2').append(build(getMonthArray(nowYear + 1, 1)))
+        $('.month2').attr('yyyy', nowYear + 1)
+        $('.month2').attr('mmmm', 1)
+        $('.month2').attr('cccc', 'month2')
+    }
+
+
+    console.log(build(getMonthArray(nowYear + 1, 1)))
+
+}
 
 
 function getMonthArray(y, m) {
-    var monthDays = []
+    let monthDays = []
     // 生成月之前数据
-    var firstWeek = getFirstWeek(y, m)
+    let firstWeek = getFirstWeek(y, m - 1) || 7
 
-    var afterMonth = m_days[m - 1 > 0 ? m - 1 : 11]
 
-    for (var i = 1; i < firstWeek; i++) {
+    let afterMonth = getNowYearMonthgetNowYearMonth(y)[m - 1 > 0 ? m - 1 : 11]
+    for (let i = 0; i < firstWeek - 1; i++) {
         monthDays.unshift({
             text: afterMonth - i,
             class: 'kc-befor'
@@ -75,17 +170,24 @@ function getMonthArray(y, m) {
 
 
     // 生成月默认数据
-    for (var i = 0; i < m_days[m - 1]; i++) {
-        monthDays.push({
+    for (let i = 0; i < getNowYearMonthgetNowYearMonth(y)[m - 1]; i++) {
+        let json = {
             text: i + 1,
-            class: 'kc-now'
-        })
+            class: 'kc-now '
+        }
+
+        if(y == year && m == month && day == i + 1){
+            console.log(i)
+            json.class = 'kc-now kc-today'
+        }
+
+        monthDays.push(json)
     }
 
 
     // 生成月之后数据
-    var surplus = 42 - monthDays.length
-    for (var i = 1; i <= surplus; i++) {
+    let surplus = monthDays.length <= 35 ? 35 - monthDays.length : 42 - monthDays.length
+    for (let i = 1; i <= surplus; i++) {
         monthDays.push({
             text: i,
             class: 'kc-after'

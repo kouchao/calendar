@@ -27,3 +27,7 @@
 .kc-befor {
     color: #666;
 }
+
+.kc-today {
+    color: red;
+}
