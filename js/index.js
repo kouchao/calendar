@@ -9,7 +9,7 @@ const day = new Date().getDate();
 
 
 $('.kc-year').html(year)
-$('.kc-month').html(month + 1)
+$('.kc-month').html(month)
 $('.kc-day').html(day)
 
 
