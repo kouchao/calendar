@@ -8,6 +8,11 @@ var setClass = {
         if(d == 10){
             json.class = 'kc-now kc-abnormalDay'
         }
+    },
+    setLink(json, y, m, d) {
+       if(d == 20) {
+        json.link = 'http://baidu.com'
+       } 
     }
 }
 
@@ -117,7 +122,16 @@ function build(m) {
         content.append(col)
         for(let j = 0; j < utilNum; j++) {
             let unit = $('<div class="kc-unit"></div>');
-            unit.html(m[j * 7 + i].text)
+
+            let a = $('<a></a>')
+
+            if(m[j * 7 + i].link) {
+                a.attr('href', m[j * 7 + i].link)
+                a.html(m[j * 7 + i].text)
+            }
+            
+            unit.html(m[j * 7 + i].link ? a : m[j * 7 + i].text)
+
             unit.addClass(m[j * 7 + i].class)
             col.append(unit)
         }
@@ -163,9 +177,6 @@ function setHtml() {
         $('.month2').attr('cccc', 'month2')
     }
 
-
-    console.log(build(getMonthArray(nowYear + 1, 1)))
-
 }
 
 
@@ -197,6 +208,7 @@ function getMonthArray(y, m) {
         }
         setClass.isToday(json, y, m, i + 1)
         setClass.isAbnormal(json, y, m, i + 1)
+        setClass.setLink(json, y, m, i + 1)
 
         monthDays.push(json)
     }
